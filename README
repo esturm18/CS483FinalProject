@@ -1,0 +1,201 @@
+Name: Emma Sturm
+Date: 03/30/2025
+Project: Part 1 Final
+
+Project Overview:
+    The purpose of this project is to implement ThoughtStream, a digital diary that saves entries for different users. The purpose of creating ThoughtStream is so that I can learn different frameworks and how the backend interacts with the frontend. Additionally, the purpose of ThoughtStream is to enable users to have a safe and secure way of writing their deep dark secrets. 
+
+
+Setup Instructions:
+    To prepare to use ThoughStream, here are some dependencies you need to install for your machine: 
+        - Install Node.js and npm from website https://nodejs.org/en
+        - Initialize project by creating a directory for it, i.e. diary app, and then  setting up project in the directory by entering "npm init -y"
+        - Dependencies to install = express, mongoose, dotenv, cors ad axios. To install these, enter this into the command line "npm install express mongoose dotenv cors axios" 
+        - Download MongoDB and Postman if you do not already have it. 
+        - Optional dependency: nodemon
+        - Also install mongoose by entering in "npm install mongoose" onto the terminal
+    To start your server: open up a terminal. Type in "npm run dev" to start the server if you downloaded nodemon, "npm start" if you did not. 
+
+
+API Usage Guide: 
+    -Available API Endpoints:
+        POST /api/diary --This creates an diary entry
+        GET /api/diary/:id --This returns an diary entry by id
+            Can also search by doing GET /api/diary?location=cityName
+            OR by doing GET /api/diary?search=Banana (looks for keywords)
+            OR by doing GET /api/diary?search=Banana&location=Tokyo (combine filters)
+        PUT /api/diary/:id --This updates an diary entry
+        DELETE /api/diary/:id --This deletes an diary entry
+
+    -Example requests and responses (success and error cases)
+        For POST: Valid JSON
+            POST http://localhost:5000/api/diary
+            Example entry json into Postman: 
+                {
+                    "user": "67e98b5b9c79d0ff195aabcd", 
+                    "title": "Heading to Germany again...",
+                    "content": "Going to eat sauerkraut",
+                    "location": "Dublin",
+                    "tags": ["travel", "fall"]
+                }
+
+            Output: 
+                {
+                    "user": "67e98b5b9c79d0ff195aabcd",
+                    "title": "Heading to Germany again...",
+                    "content": "Going to eat sauerkraut",
+                    "location": "Dublin",
+                    "tags": [
+                        "travel",
+                        "fall"
+                    ],
+                    "_id": "67e98c409c79d0ff195ae8a7",
+                    "createdAt": "2025-03-30T18:24:00.525Z",
+                    "updatedAt": "2025-03-30T18:24:00.525Z",
+                    "__v": 0
+                }
+
+                Return Code: 201 (Entry was successfully created)
+
+        For POST: Invalid JSON, missing "title" 
+            POST http://localhost:5000/api/diary
+            {
+                "content": "Ate a lot of baguettes",
+                "location": "Paris",
+                "tags": ["travel", "spring"]
+            }
+
+            Output: 
+            {
+                "message": "Title, user, content, and location are required."
+            }
+
+            Returned Error Code: 400 (Bad Request)
+
+        For GET: Valid Search
+            GET http://localhost:5000/api/diary?user=123
+
+            Output:
+                {
+                    "user": "123",
+                    "title": "Hurrah",
+                    "content": "Going to the beach",
+                    "location": "Croatia",
+                    "tags": [
+                        "travel",
+                        "fall"
+                    ],
+                    "_id": "67e98f8e823059b888e961ff",
+                    "createdAt": "2025-03-30T18:38:06.827Z",
+                    "updatedAt": "2025-03-30T18:38:06.827Z",
+                    "__v": 0
+                }
+         
+
+            Returned Code: 200 (OK - Request was successful)
+
+        For GET: Invalid Search by ID (bad id)
+            http://localhost:5000/api/diary/67e88c1c8219c6b7508103630000
+
+            Output:
+            {
+                "message": "Server Error: Unable to retrieve diary entry"
+            }
+
+            Returned Code: 404 (Not Found)
+
+        For PUT: Valid Update 
+            PUT http://localhost:5000/api/diary/67e98f8e823059b888e961ff
+        
+            Before: 
+            {
+                "_id": "67e98f8e823059b888e961ff",
+                "user": "123",
+                "title": "Hurrah",
+                "content": "Going to the beach",
+                "location": "Croatia",
+                "tags": [
+                    "travel",
+                    "fall"
+                ],
+                "createdAt": "2025-03-30T18:38:06.827Z",
+                "updatedAt": "2025-03-30T18:38:06.827Z",
+                "__v": 0
+            }
+
+            Input: 
+            {
+                "location": "Italy"
+            }
+
+            Output: 
+            {
+                "_id": "67e98f8e823059b888e961ff",
+                "user": "123",
+                "title": "Hurrah",
+                "content": "Going to the beach",
+                "location": "Italy",
+                "tags": [
+                    "travel",
+                    "fall"
+                ],
+                "createdAt": "2025-03-30T18:38:06.827Z",
+                "updatedAt": "2025-03-30T18:46:46.365Z",
+                "__v": 0
+            }
+
+            Returned Code: 200
+
+        For PUT: Invalid //Can also be invalid if trying to update a required field, those can't be changed
+            PUT http://localhost:5000/api/diary/67e968a38a69347502ad7e330000
+
+            Output: 
+            {
+                "message": "Server Error: Unable to update diary entry"
+            }
+
+            Returned Code: 404 (Not Found)
+
+        FOR DELETE: Valid
+            DELETE http://localhost:5000/api/diary/67e968a38a69347502ad7e33
+
+            Output: 
+            {
+                "message": "Diary entry deleted successfully"
+            }
+
+            Returned Code: 200
+
+        FOR DELETE: InValid (Trying to delete the above entry that was already deleted):
+
+            Output: 
+            {
+                "message": "Diary entry not found"
+            } 
+
+            Returned Code: 404 
+
+
+Environment Variables:
+    Needed for Part1: 
+    -MONGO_URI=mongodb://localhost:27017/diaryApp
+
+    Needed for other Parts, I'm assuming = 
+    MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/diary-app
+    PORT=5000
+    JWT_SECRET=<your_jwt_secret>
+    GOOGLE_CLIENT_ID=<your_google_client_id>
+    GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+
+Common Issues & Debugging:
+    -Could not get User field to populate, would run into errors on Postman. 
+     I am not sure if this is because there is supposed to be Middleware code? However, this step was not included in the guide. I simply changed the user code to just accept a string, and then my code seemed to work fine on Postman, otherwise it would not because it wasn't populating the user field correctly (without the middleware)."User" currently just requires a temporary placeholder. 
+     -Other issues: none
+
+    -Debugging Tips: Put print statements where need be so you can see what is happening as your code progresses and use Postman to see error code results.
+
+API Testing Results:
+    -Photos are saved under the SamplePhotos Folder. Photos are laveled with what test was conducted. 
+
+
+Git Commit History: 
