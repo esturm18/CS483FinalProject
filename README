@@ -32,65 +32,80 @@ API Usage Guide:
             POST http://localhost:5000/api/diary
             Example entry json into Postman: 
                 {
-                    "user": "67e98b5b9c79d0ff195aabcd", 
-                    "title": "Heading to Germany again...",
-                    "content": "Going to eat sauerkraut",
-                    "location": "Dublin",
-                    "tags": ["travel", "fall"]
+                    "user": "123",
+                    "title": "Rainy days",
+                    "content": "It rained all day, but I stayed cozy inside.",
+                    "reflection": "I enjoyed the calmness of the rain",
+                    "location": "Forks, US",
+                    "tags": ["rain", "cold"]
                 }
+
 
             Output: 
                 {
-                    "user": "67e98b5b9c79d0ff195aabcd",
-                    "title": "Heading to Germany again...",
-                    "content": "Going to eat sauerkraut",
-                    "location": "Dublin",
+                    "user": "123",
+                    "title": "Rainy days",
+                    "content": "It rained all day, but I stayed cozy inside.",
+                    "reflection": "I enjoyed the calmness of the rain",
+                    "location": "Forks, US",
                     "tags": [
-                        "travel",
-                        "fall"
+                        "rain",
+                        "cold"
                     ],
-                    "_id": "67e98c409c79d0ff195ae8a7",
-                    "createdAt": "2025-03-30T18:24:00.525Z",
-                    "updatedAt": "2025-03-30T18:24:00.525Z",
+                    "weather": {
+                        "condition": "scattered clouds",
+                        "temperature": 45.91,
+                        "location": "Forks, US"
+                    },
+                    "_id": "67edefd49cebdb194bb4e6a3",
+                    "createdAt": "2025-04-03T02:17:56.159Z",
+                    "updatedAt": "2025-04-03T02:17:56.159Z",
                     "__v": 0
                 }
-
                 Return Code: 201 (Entry was successfully created)
+
 
         For POST: Invalid JSON, missing "title" 
             POST http://localhost:5000/api/diary
             {
-                "content": "Ate a lot of baguettes",
-                "location": "Paris",
-                "tags": ["travel", "spring"]
+                "user": "123",
+                "content": "It rained all day, but I stayed cozy inside.",
+                "reflection": "I enjoyed the calmness of the rain",
+                "location": "Forks, US",
+                "tags": ["rain", "cold"]
             }
 
-            Output: 
+            Output:
             {
                 "message": "Title, user, content, and location are required."
-            }
+            }   
 
             Returned Error Code: 400 (Bad Request)
 
         For GET: Valid Search
-            GET http://localhost:5000/api/diary?user=123
+            GET http://localhost:5000/api/diary/67edefd49cebdb194bb4e6a3
 
-            Output:
+            Output: 
                 {
                     "user": "123",
-                    "title": "Hurrah",
-                    "content": "Going to the beach",
-                    "location": "Croatia",
+                    "title": "Rainy days",
+                    "content": "It rained all day, but I stayed cozy inside.",
+                    "reflection": "I enjoyed the calmness of the rain",
+                    "location": "Forks, US",
                     "tags": [
-                        "travel",
-                        "fall"
+                        "rain",
+                        "cold"
                     ],
-                    "_id": "67e98f8e823059b888e961ff",
-                    "createdAt": "2025-03-30T18:38:06.827Z",
-                    "updatedAt": "2025-03-30T18:38:06.827Z",
+                    "weather": {
+                        "condition": "scattered clouds",
+                        "temperature": 45.91,
+                        "location": "Forks, US"
+                    },
+                    "_id": "67edefd49cebdb194bb4e6a3",
+                    "createdAt": "2025-04-03T02:17:56.159Z",
+                    "updatedAt": "2025-04-03T02:17:56.159Z",
                     "__v": 0
                 }
-         
 
             Returned Code: 200 (OK - Request was successful)
 
@@ -109,55 +124,58 @@ API Usage Guide:
         
             Before: 
             {
-                "_id": "67e98f8e823059b888e961ff",
                 "user": "123",
-                "title": "Hurrah",
-                "content": "Going to the beach",
-                "location": "Croatia",
+                "title": "Rainy days",
+                "content": "It rained all day, but I stayed cozy inside.",
+                "reflection": "I enjoyed the calmness of the rain",
+                "location": "Forks, US",
                 "tags": [
-                    "travel",
-                    "fall"
+                    "rain",
+                    "cold"
                 ],
-                "createdAt": "2025-03-30T18:38:06.827Z",
-                "updatedAt": "2025-03-30T18:38:06.827Z",
+                "weather": {
+                    "condition": "scattered clouds",
+                    "temperature": 45.91,
+                    "location": "Forks, US"
+                },
+                "_id": "67edefd49cebdb194bb4e6a3",
+                "createdAt": "2025-04-03T02:17:56.159Z",
+                "updatedAt": "2025-04-03T02:17:56.159Z",
                 "__v": 0
             }
+           
 
             Input: 
             {
-                "location": "Italy"
+                "location": "Boston, US"
             }
 
             Output: 
             {
-                "_id": "67e98f8e823059b888e961ff",
+                "weather": {
+                "condition": "moderate rain",
+                "temperature": 38.05,
+                "location": "Boston, US"
+            },
+                "_id": "67edefd49cebdb194bb4e6a3",
                 "user": "123",
-                "title": "Hurrah",
-                "content": "Going to the beach",
-                "location": "Italy",
+                "title": "Rainy days",
+                "content": "It rained all day, but I stayed cozy inside.",
+                "reflection": "I enjoyed the calmness of the rain",
+                "location": "Boston, US",
                 "tags": [
-                    "travel",
-                    "fall"
+                    "rain",
+                    "cold"
                 ],
-                "createdAt": "2025-03-30T18:38:06.827Z",
-                "updatedAt": "2025-03-30T18:46:46.365Z",
+                "createdAt": "2025-04-03T02:17:56.159Z",
+                "updatedAt": "2025-04-03T02:30:43.469Z",
                 "__v": 0
             }
 
             Returned Code: 200
 
-        For PUT: Invalid //Can also be invalid if trying to update a required field, those can't be changed
-            PUT http://localhost:5000/api/diary/67e968a38a69347502ad7e330000
-
-            Output: 
-            {
-                "message": "Server Error: Unable to update diary entry"
-            }
-
-            Returned Code: 404 (Not Found)
-
         FOR DELETE: Valid
-            DELETE http://localhost:5000/api/diary/67e968a38a69347502ad7e33
+            DELETE http://localhost:5000/api/diary/67edefd49cebdb194bb4e6a3 
 
             Output: 
             {

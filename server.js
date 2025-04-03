@@ -29,6 +29,7 @@ app.get("/", (req, res) => {
 res.send("Welcome to ThoughtStream API");
 });
 // Define the server port (uses environment variable or defaults to 5000)
+console.log("Port: ", process.env.PORT);
 const PORT = process.env.PORT || 5000;
 // Start the Express server and listen for incoming requests
 app.listen(PORT, () => {

@@ -1,5 +1,6 @@
 import DiaryEntry from "../models/DiaryEntry.js";
-import mongoose from "mongoose";
+import { fetchWeather } from "./weatherController.js"; 
+
 export const getAllEntries = async (req, res) => {
     try {
         const { search, tag, location } = req.query;
@@ -45,22 +46,26 @@ export const getEntryById = async (req, res) => {
  * @desc Create a new diary entry
  * @access Public (Authentication will be added in Part 2)
  */
+
 export const createEntry = async (req, res) => {
     try {
         const { user, title, content, reflection, location, tags } = req.body;
         if (!title || !content || !location || !user) {
             return res.status(400).json({ message: "Title, user, content, and location are required." });
         }
+        const weather = await fetchWeather(location);
         const newDiaryEntry = new DiaryEntry({
             user,
             title,
             content,
             reflection,
             location,
-            tags: tags || []
+            tags: tags || [],
+            weather
         });
+
         await newDiaryEntry.save();
-        res.status(201).json(newEntry);
+        res.status(201).json(newDiaryEntry);
     } catch (error) {
         console.error("Error creating diary entry:", error);
         res.status(400).json({ message: "Unable to create diary entry" });
@@ -72,23 +77,36 @@ export const createEntry = async (req, res) => {
  * @desc Update an existing diary entry
  * @access Public (Authentication will be added in Part 2)
  */
+
 export const updateEntry = async (req, res) => {
     try {
-        const { title, content, location, tags } = req.body;
-        const updatedData = { title, content, location, tags };
-
-        const entry = await DiaryEntry.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-
+        const { title, content, location, tags, reflection } = req.body;
+        const entry = await DiaryEntry.findById(req.params.id);
         if (!entry) {
             return res.status(404).json({ message: "Diary entry not found" });
         }
+        let updatedData = {};
+        updatedData.title = title;
+        updatedData.content = content;
+        updatedData.tags = tags;
+        updatedData.reflection = reflection;
+        const newWeather = await fetchWeather(location);
+        updatedData.weather = {
+            condition: newWeather.condition,
+            temperature: newWeather.temperature,
+            location: newWeather.location
+        }
+        console.log("location = ", location);
+        updatedData.location = location;
+        console.log("UpdatedLocation = ", updatedData.location);
+        const updatedEntry = await DiaryEntry.findByIdAndUpdate(req.params.id, updatedData, { new: true });
 
-        res.status(200).json(entry);
+        res.status(200).json(updatedEntry);
     } catch (error) {
-        res.status(404).json({ message: "Unable to update diary entry" });
+        console.error("Error updating diary entry:", error);
+        res.status(400).json({ message: "Unable to update diary entry" });
     }
 };
-
 /**
  * @route DELETE /api/diary/:id
  * @desc Delete a diary entry
